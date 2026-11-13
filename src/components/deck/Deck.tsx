@@ -14,7 +14,7 @@ import {
   type Variants,
 } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, CornersOut, IconProvider } from "@/components/ui/icons";
+import { Anim, ArrowLeftIcon, ArrowRightIcon, Maximize2Icon } from "@/components/ui/icons";
 import { SLIDES, SECTIONS } from "@/slides";
 import { DeckContext, MouseContext } from "./context";
 import { EASE, META, cn } from "@/lib/meta";
@@ -152,7 +152,6 @@ export function Deck() {
   const dur = reduce ? 0.3 : T_DUR;
 
   return (
-    <IconProvider>
     <DeckContext.Provider value={{ goTo, index }}>
       <MouseContext.Provider value={mouse}>
         <main
@@ -211,7 +210,6 @@ export function Deck() {
         </main>
       </MouseContext.Provider>
     </DeckContext.Provider>
-    </IconProvider>
   );
 }
 
@@ -381,7 +379,7 @@ function Header({ index, onGo }: { index: number; onGo: (i: number) => void }) {
           onClick={toggleFullscreen}
           className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/8 transition-colors hover:bg-if-green"
         >
-          <CornersOut size={20} />
+          <Anim icon={Maximize2Icon} size={20} delay={1.5} />
         </button>
       </div>
     </header>
@@ -414,7 +412,7 @@ function Footer({ index, onGo }: { index: number; onGo: (i: number) => void }) {
       {/* controles */}
       <footer className={cn("absolute bottom-6 right-10 z-30 flex h-[56px] items-center gap-1 rounded-2xl px-1.5", capsule)}>
         <button aria-label="Anterior" onClick={() => onGo(index - 1)} disabled={index === 0} className={arrow}>
-          <ArrowLeft size={20} />
+          <Anim icon={ArrowLeftIcon} size={20} />
         </button>
         <div className="relative h-full w-[280px] overflow-hidden">
           <AnimatePresence initial={false}>
@@ -432,7 +430,7 @@ function Footer({ index, onGo }: { index: number; onGo: (i: number) => void }) {
           </AnimatePresence>
         </div>
         <button aria-label="Próximo" onClick={() => onGo(index + 1)} disabled={index === last} className={arrow}>
-          <ArrowRight size={20} />
+          <Anim icon={ArrowRightIcon} size={20} trigger={index} delay={0.9} />
         </button>
       </footer>
     </>

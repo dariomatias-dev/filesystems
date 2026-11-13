@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { BASE_DELAY, EASE, META, cn } from "@/lib/meta";
-import { ChalkboardTeacher, Cpu, GraduationCap, UsersThree, type Icon } from "@/components/ui/icons";
 
 const initials = (n: string) =>
   n
@@ -14,9 +13,9 @@ const initials = (n: string) =>
 
 /** Faixa de contexto acadêmico: disciplina · curso · instituição. */
 export function CourseStrip({ delay = 0 }: { delay?: number }) {
-  const items: { icon: Icon; label: string; value: string }[] = [
-    { icon: Cpu, label: "Disciplina", value: META.disciplina },
-    { icon: GraduationCap, label: "Curso", value: META.curso },
+  const items: { label: string; value: string }[] = [
+    { label: "Disciplina", value: META.disciplina },
+    { label: "Curso", value: META.curso },
   ];
   return (
     <motion.div
@@ -25,11 +24,8 @@ export function CourseStrip({ delay = 0 }: { delay?: number }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: BASE_DELAY + delay, duration: 0.8, ease: EASE }}
     >
-      {items.map(({ icon: I, label, value }) => (
-        <div key={label} className="flex items-center gap-3 border-r border-white/10 py-2.5 pl-3 pr-5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-if-green/15 text-if-lime ring-1 ring-inset ring-if-green/30">
-            <I size={19} />
-          </span>
+      {items.map(({ label, value }) => (
+        <div key={label} className="flex items-center border-r border-white/10 px-5 py-2.5">
           <span className="flex flex-col leading-tight">
             <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-white/60">{label}</span>
             <span className="text-[17px] font-medium text-white">{value}</span>
@@ -74,7 +70,7 @@ export function TeamPanel({ delay = 0, className }: { delay?: number; className?
     >
       <div className="p-5 pr-7">
         <div className="mb-3.5 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-if-lime">
-          <UsersThree size={18} /> Equipe
+          Equipe
         </div>
         <div className="flex flex-col gap-2.5">
           {META.autores.map((n, i) => (
@@ -93,7 +89,7 @@ export function TeamPanel({ delay = 0, className }: { delay?: number; className?
       </div>
       <div className="flex w-[350px] flex-col bg-gradient-to-br from-if-green/25 to-if-green/5 p-5 ring-1 ring-inset ring-if-green/25">
         <div className="mb-3.5 flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-if-lime">
-          <ChalkboardTeacher size={18} /> Professor
+          Professor
         </div>
         <Avatar name={META.professor} tone="white" size={52} />
         <div className="mt-3 text-[20px] font-semibold leading-tight text-white">{META.professor}</div>

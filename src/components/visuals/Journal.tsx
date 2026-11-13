@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { BookOpenText, Check, Cpu, HardDrive, ArrowCounterClockwise, Lightning } from "@/components/ui/icons";
+import { Anim, CheckIcon, RotateCCWIcon, ZapOffIcon } from "@/components/ui/icons";
 import { EASE, cn } from "@/lib/meta";
 import { Panel, useStep } from "./shared";
 
@@ -28,7 +28,7 @@ export function JournalDemo() {
       <Panel title="journaling — simulação" right={<span className="font-mono text-[13px] text-if-lime">etapa {step + 1}/6</span>}>
         <div className="relative grid grid-cols-[1fr_1.2fr_1.4fr] gap-4 p-5">
           {/* Operação */}
-          <Column icon={<Cpu size={16} />} title="Operação">
+          <Column title="Operação">
             <AnimatePresence mode="wait">
               {(step === 0 || step === 4) && (
                 <motion.div
@@ -46,7 +46,7 @@ export function JournalDemo() {
           </Column>
 
           {/* Journal */}
-          <Column icon={<BookOpenText size={16} />} title="Journal (diário)">
+          <Column title="Journal (diário)">
             <div className="flex flex-col gap-2">
               <AnimatePresence mode="wait">
                 {entryA && (
@@ -58,7 +58,7 @@ export function JournalDemo() {
           </Column>
 
           {/* Disco */}
-          <Column icon={<HardDrive size={16} />} title="Disco">
+          <Column title="Disco">
             <div className="grid grid-cols-4 gap-2">
               {Array.from({ length: 8 }).map((_, i) => {
                 const isA = i === 1 || i === 2;
@@ -95,7 +95,7 @@ export function JournalDemo() {
                 crash ? "bg-if-red/20 text-if-red-soft" : "bg-if-green/15 text-if-lime",
               )}
             >
-              {crash ? <Lightning size={12} /> : <Check size={12} />}
+              {crash ? <Anim icon={ZapOffIcon} size={14} trigger={step} /> : <Anim icon={CheckIcon} size={14} trigger={step} />}
               {crash ? "inconsistente" : "consistente"}
             </motion.div>
           </Column>
@@ -151,7 +151,7 @@ export function JournalDemo() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
           >
-            {step === 5 && <ArrowCounterClockwise size={16} className="text-if-lime" />}
+            {step === 5 && <Anim icon={RotateCCWIcon} size={18} className="text-if-lime" />}
             {STEPS[step].desc}
           </motion.p>
         </AnimatePresence>
@@ -160,11 +160,10 @@ export function JournalDemo() {
   );
 }
 
-function Column({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Column({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="min-h-[230px] rounded-xl border border-white/8 bg-black/25 p-3.5">
       <div className="mb-3 flex items-center gap-2 font-mono text-[13px] uppercase tracking-[0.15em] text-white/65">
-        <span className="text-if-lime">{icon}</span>
         {title}
       </div>
       {children}
@@ -194,9 +193,7 @@ function Entry({ name, state }: { name: string; state: "pendente" | "commit" | "
           {state}
         </span>
         {state === "replay" && (
-          <motion.span animate={{ rotate: -360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-            <ArrowCounterClockwise size={11} className="text-if-lime" />
-          </motion.span>
+          <Anim icon={RotateCCWIcon} size={13} every={1000} className="text-if-lime" />
         )}
       </div>
     </motion.div>

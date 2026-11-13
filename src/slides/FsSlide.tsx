@@ -4,7 +4,6 @@ import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { BASE_DELAY, EASE, cn } from "@/lib/meta";
 import { BottomShade, Glow, PixelField } from "@/components/ui/backgrounds";
-import type { Icon } from "@/components/ui/icons";
 import { Parallax, Reveal, SplitWords, Tag } from "@/components/ui/motion";
 import { useDeck } from "@/components/deck/context";
 
@@ -17,7 +16,7 @@ export type FsInfo = {
   since: string;
   lead: string;
   features: string[];
-  where: { label: string; icon: Icon }[];
+  where: string[];
   visual: ReactNode;
   glow?: "a" | "b" | "c" | "red";
 };
@@ -81,10 +80,10 @@ export function FsSlide({ fs }: { fs: FsInfo }) {
             <SplitWords text={fs.name} delay={0.05} />
           </h2>
 
-          <Reveal delay={0.2} className="mt-4 flex flex-wrap items-center gap-2">
+          <Reveal delay={0.2} className="mt-4 flex items-center gap-2 whitespace-nowrap">
             <span className="mr-2 font-mono text-[15px] text-if-lime">{fs.full}</span>
-            <Tag>{fs.env}</Tag>
-            <Tag>desde {fs.since}</Tag>
+            <Tag dot={false}>{fs.env}</Tag>
+            <Tag dot={false}>desde {fs.since}</Tag>
           </Reveal>
 
           <Reveal delay={0.3} className="mt-6 max-w-[580px] text-[21px] leading-snug text-white/70">
@@ -111,12 +110,11 @@ export function FsSlide({ fs }: { fs: FsInfo }) {
           <Reveal delay={1} className="mt-auto pt-6">
             <div className="mb-2.5 text-[14px] font-semibold uppercase tracking-[0.16em] text-white/80">Onde se usa</div>
             <div className="flex flex-wrap gap-2.5">
-              {fs.where.map(({ label, icon: I }) => (
+              {fs.where.map((label) => (
                 <span
                   key={label}
                   className="flex items-center gap-2 rounded-xl bg-white/10 px-3.5 py-2 text-[16px] font-medium text-white ring-1 ring-inset ring-white/15 backdrop-blur-md"
                 >
-                  <I size={20} className="text-if-lime" />
                   {label}
                 </span>
               ))}

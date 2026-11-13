@@ -11,7 +11,7 @@ export const META = {
   autores: ["Dário Matias Sales", "Gustavo Davi", "Pedro Emanue"] as string[],
   professor: "Artur Luiz Torres de Oliveira" as string,
   /** Link do Google Forms (o normal, de "Enviar → link"). Vazio = mostra instruções no slide. */
-  formUrl: "" as string,
+  formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSd3hPx-hswNeKMrdHO0IBrpW7uxt-j05i5WST6tRdbyeuRvFA/viewform" as string,
   /** Opcional: link curto (ex.: forms.gle/xxxx) exibido abaixo do QR code. */
   formShortUrl: "" as string,
 };

@@ -3,7 +3,17 @@
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect } from "react";
 import { AnimatedNumber, Fluctuate, IoGraph, LiveDot } from "@/components/ui/live";
-import { Warning, Camera, Check, FileVideo, LockSimple, Minus, ShieldCheck, LockSimpleOpen, X } from "@/components/ui/icons";
+import {
+  Anim,
+  BadgeAlertIcon,
+  Camera,
+  CheckIcon,
+  Film,
+  LockKeyholeIcon,
+  LockKeyholeOpenIcon,
+  ShieldCheckIcon,
+  X,
+} from "@/components/ui/icons";
 import { BASE_DELAY, EASE, cn } from "@/lib/meta";
 import { Panel, useStep } from "./shared";
 
@@ -46,7 +56,11 @@ export function NtfsVisual() {
                 exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 16 }}
               >
-                {step ? <LockSimple className="text-if-lime" size={34} /> : <LockSimpleOpen className="text-white/65" size={34} />}
+                {step ? (
+                  <Anim icon={LockKeyholeIcon} size={34} delay={0.2} className="text-if-lime" />
+                ) : (
+                  <Anim icon={LockKeyholeOpenIcon} size={34} delay={0.2} className="text-white/70" />
+                )}
               </motion.div>
             </AnimatePresence>
             <span className="font-mono text-[13px] text-white/70">{step ? "criptografado" : "texto claro"}</span>
@@ -112,7 +126,7 @@ function Row({ row, ri }: { row: (typeof ACL)[number]; ri: number }) {
               p ? "bg-if-green/25 text-if-lime" : "bg-if-red/15 text-if-red-soft",
             )}
           >
-            {p ? <Check size={14} /> : <X size={14} />}
+            {p ? <CheckIcon size={15} /> : <X size={15} />}
           </span>
         </motion.span>
       ))}
@@ -247,7 +261,7 @@ export function CopyDemo({ fs }: { fs: "fat32" | "exfat" }) {
       <div className="relative p-6">
         <div className="mb-5 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5">
-            <FileVideo className="text-if-lime" size={26} />
+            <Film className="text-if-lime" size={26} />
           </div>
           <div>
             <div className="text-[18px] text-white">filme_4k.mkv</div>
@@ -324,7 +338,7 @@ export function CopyDemo({ fs }: { fs: "fat32" | "exfat" }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Warning className="mt-0.5 shrink-0 text-if-red-soft" size={20} />
+                <Anim icon={BadgeAlertIcon} size={22} delay={0.1} className="mt-0.5 text-if-red-soft" />
                 <div>
                   <div className="text-[15px] text-white">O arquivo é muito grande para o sistema de arquivos de destino.</div>
                   <div className="font-mono text-[13px] text-white/65">FAT32 armazena o tamanho em 32 bits → máx. 4 GB por arquivo</div>
@@ -339,7 +353,7 @@ export function CopyDemo({ fs }: { fs: "fat32" | "exfat" }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <ShieldCheck className="text-if-lime" size={22} />
+                <Anim icon={ShieldCheckIcon} size={24} delay={0.1} className="text-if-lime" />
                 <div className="text-[15px] text-white">Cópia concluída — arquivos maiores que 4 GB são suportados.</div>
               </motion.div>
             )}
@@ -609,7 +623,7 @@ export function BtrfsVisual() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10 }}
               >
-                <ShieldCheck size={12} /> cópia 2
+                cópia 2
               </motion.div>
             )}
           </AnimatePresence>
@@ -623,7 +637,11 @@ export function BtrfsVisual() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
             >
-              {step === 2 ? <Warning size={16} /> : step === 3 ? <Check size={16} className="text-if-lime" /> : <Minus size={16} className="text-white/60" />}
+              {step === 2 ? (
+                <Anim icon={BadgeAlertIcon} size={18} />
+              ) : step === 3 ? (
+                <Anim icon={CheckIcon} size={18} className="text-if-lime" />
+              ) : null}
               {status[step]}
             </motion.p>
           </AnimatePresence>

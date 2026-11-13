@@ -7,23 +7,8 @@ import { Glow } from "@/components/ui/backgrounds";
 import { Reveal, SplitWords, Tag } from "@/components/ui/motion";
 import { AnimatedNumber } from "@/components/ui/live";
 import { useStep } from "@/components/visuals/shared";
-import {
-  ChartPieSlice,
-  Check,
-  Eye,
-  FileText,
-  FolderSimple,
-  IconTile,
-  Key,
-  Lifebuoy,
-  PencilSimple,
-  SealCheck,
-  Tag as TagIcon,
-  Trash,
-  TreeStructure,
-  X,
-  type Icon,
-} from "@/components/ui/icons";
+import { Anim, CheckIcon, CircleCheckIcon, Eye, FileText, Folder, Pencil, Trash2, X } from "@/components/ui/icons";
+import type { LucideIcon } from "lucide-react";
 
 /* ───────────────────────── mini-visualizações (todas em loop) ───────────────────────── */
 
@@ -47,7 +32,7 @@ function TreeViz() {
           animate={{ opacity: i <= n ? 1 : 0.18, x: i <= n ? 0 : -6 }}
           transition={{ duration: 0.35 }}
         >
-          {t.dir ? <FolderSimple size={15} className="text-if-lime" /> : <FileText size={15} className="text-white/80" />}
+          {t.dir ? <Folder size={15} className="text-if-lime" /> : <FileText size={15} className="text-white/80" />}
           <span className={t.dir ? "text-white" : "text-white/80"}>{t.n}</span>
         </motion.div>
       ))}
@@ -143,7 +128,7 @@ function AccessViz() {
         <span className="w-[62px] font-semibold text-white">{p.who}</span>
         {["ler", "gravar", "executar"].map((op, i) => (
           <span key={op} className={cn("flex items-center gap-1", p.ok[i] ? "text-if-lime" : "text-if-red-soft")}>
-            {p.ok[i] ? <Check size={15} weight="bold" /> : <X size={15} weight="bold" />}
+            {p.ok[i] ? <Anim icon={CheckIcon} size={16} trigger={g} /> : <X size={16} />}
             {op}
           </span>
         ))}
@@ -152,12 +137,12 @@ function AccessViz() {
   );
 }
 
-const OPS: { icon: Icon; op: string; file: string; tone: string }[] = [
+const OPS: { icon: LucideIcon; op: string; file: string; tone: string }[] = [
   { icon: Eye, op: "read", file: "notas.txt", tone: "text-if-lime" },
-  { icon: PencilSimple, op: "write", file: "trabalho.odt", tone: "text-white" },
-  { icon: Trash, op: "unlink", file: "temp.log", tone: "text-if-red-soft" },
+  { icon: Pencil, op: "write", file: "trabalho.odt", tone: "text-white" },
+  { icon: Trash2, op: "unlink", file: "temp.log", tone: "text-if-red-soft" },
   { icon: Eye, op: "read", file: "foto.jpg", tone: "text-if-lime" },
-  { icon: PencilSimple, op: "write", file: "slides.html", tone: "text-white" },
+  { icon: Pencil, op: "write", file: "slides.html", tone: "text-white" },
 ];
 
 function OpsViz() {
@@ -211,7 +196,7 @@ function RecoverViz() {
           />
         </svg>
         <span className="absolute inset-0 flex items-center justify-center">
-          {s ? <SealCheck size={30} weight="fill" /> : <span className="font-mono text-[14px]">fsck</span>}
+          {s ? <Anim icon={CircleCheckIcon} size={30} /> : <span className="font-mono text-[14px]">fsck</span>}
         </span>
       </div>
       <div className="text-[16px] leading-snug">
@@ -224,13 +209,13 @@ function RecoverViz() {
 
 /* ───────────────────────── slide ───────────────────────── */
 
-const DUTIES: { icon: Icon; t: string; d: string; viz: ReactNode }[] = [
-  { icon: TreeStructure, t: "Organização", d: "Arquivos e diretórios em hierarquia", viz: <TreeViz /> },
-  { icon: ChartPieSlice, t: "Espaço livre e ocupado", d: "Saber quais blocos estão disponíveis", viz: <SpaceViz /> },
-  { icon: TagIcon, t: "Metadados", d: "Nome, tamanho, data de criação, permissões", viz: <MetaViz /> },
-  { icon: Key, t: "Controle de acesso", d: "Quem pode ler, gravar ou executar", viz: <AccessViz /> },
-  { icon: PencilSimple, t: "Leitura, gravação e exclusão", d: "Todas as operações passam por ele", viz: <OpsViz /> },
-  { icon: Lifebuoy, t: "Consistência após falhas", d: "Recuperar a integridade depois de um erro", viz: <RecoverViz /> },
+const DUTIES: { t: string; d: string; viz: ReactNode }[] = [
+  { t: "Organização", d: "Arquivos e diretórios em hierarquia", viz: <TreeViz /> },
+  { t: "Espaço livre e ocupado", d: "Saber quais blocos estão disponíveis", viz: <SpaceViz /> },
+  { t: "Metadados", d: "Nome, tamanho, data de criação, permissões", viz: <MetaViz /> },
+  { t: "Controle de acesso", d: "Quem pode ler, gravar ou executar", viz: <AccessViz /> },
+  { t: "Leitura, gravação e exclusão", d: "Todas as operações passam por ele", viz: <OpsViz /> },
+  { t: "Consistência após falhas", d: "Recuperar a integridade depois de um erro", viz: <RecoverViz /> },
 ];
 
 export function Duties() {
@@ -278,7 +263,6 @@ export function Duties() {
                   <div className="w-full">{d.viz}</div>
                 </div>
                 <div className="mt-auto flex items-start gap-3.5">
-                  <IconTile icon={d.icon} tone={hero ? "solid" : "green"} size="sm" />
                   <div className="min-w-0">
                     <div className="text-[22px] font-semibold leading-tight tracking-tight">{d.t}</div>
                     <div className={cn("mt-1 text-[16px] leading-snug", hero ? "text-white/90" : "text-white/75")}>{d.d}</div>

@@ -5,38 +5,25 @@ import { useState } from "react";
 import { BASE_DELAY, EASE, cn } from "@/lib/meta";
 import { CountUp, Reveal, SplitWords, Tag } from "@/components/ui/motion";
 import { useStep } from "@/components/visuals/shared";
-import {
-  AppleLogo,
-  ArrowsClockwise,
-  Camera,
-  Check,
-  HardDrive,
-  Key,
-  LinuxLogo,
-  Minus,
-  Ruler,
-  Usb,
-  WindowsLogo,
-  type Icon,
-} from "@/components/ui/icons";
+import { Anim, CheckIcon, Minus } from "@/components/ui/icons";
 
 type Cap = "y" | "n" | string;
-type Row = { fs: string; env: string; envIcon: Icon; main: string; note: string; rec: Cap; snap: Cap; perm: Cap; big: Cap };
+type Row = { fs: string; env: string; main: string; note: string; rec: Cap; snap: Cap; perm: Cap; big: Cap };
 
 const ROWS: Row[] = [
-  { fs: "NTFS", env: "Windows", envIcon: WindowsLogo, main: "Segurança e gerenciamento", note: "Padrão do Windows moderno, com permissões, criptografia, compressão e cotas.", rec: "journal", snap: "n", perm: "y", big: "y" },
-  { fs: "ext4", env: "Linux", envIcon: LinuxLogo, main: "Estabilidade e desempenho", note: "Escolha consolidada no Linux; usa extents para alocar o espaço com eficiência.", rec: "journal", snap: "n", perm: "y", big: "y" },
-  { fs: "FAT32", env: "Diversos sistemas", envIcon: Usb, main: "Compatibilidade", note: "Funciona em quase tudo, mas limita cada arquivo a 4 GB.", rec: "n", snap: "n", perm: "n", big: "n" },
-  { fs: "exFAT", env: "Armazenamento externo", envIcon: HardDrive, main: "Suporte a arquivos grandes", note: "Sucessor do FAT32 para mídias removíveis compartilhadas entre sistemas.", rec: "n", snap: "n", perm: "n", big: "y" },
-  { fs: "APFS", env: "Apple", envIcon: AppleLogo, main: "Criptografia e otimização para SSD", note: "Feito pela Apple para flash: Copy-on-Write, snapshots e espaço compartilhado.", rec: "CoW", snap: "y", perm: "y", big: "y" },
-  { fs: "Btrfs", env: "Linux", envIcon: LinuxLogo, main: "Snapshots e integridade", note: "Copy-on-Write com checksums, compressão e vários discos no mesmo volume.", rec: "CoW", snap: "y", perm: "y", big: "y" },
+  { fs: "NTFS", env: "Windows", main: "Segurança e gerenciamento", note: "Padrão do Windows moderno, com permissões, criptografia, compressão e cotas.", rec: "journal", snap: "n", perm: "y", big: "y" },
+  { fs: "ext4", env: "Linux", main: "Estabilidade e desempenho", note: "Escolha consolidada no Linux; usa extents para alocar o espaço com eficiência.", rec: "journal", snap: "n", perm: "y", big: "y" },
+  { fs: "FAT32", env: "Diversos sistemas", main: "Compatibilidade", note: "Funciona em quase tudo, mas limita cada arquivo a 4 GB.", rec: "n", snap: "n", perm: "n", big: "n" },
+  { fs: "exFAT", env: "Armazenamento externo", main: "Suporte a arquivos grandes", note: "Sucessor do FAT32 para mídias removíveis compartilhadas entre sistemas.", rec: "n", snap: "n", perm: "n", big: "y" },
+  { fs: "APFS", env: "Apple", main: "Criptografia e otimização para SSD", note: "Feito pela Apple para flash: Copy-on-Write, snapshots e espaço compartilhado.", rec: "CoW", snap: "y", perm: "y", big: "y" },
+  { fs: "Btrfs", env: "Linux", main: "Snapshots e integridade", note: "Copy-on-Write com checksums, compressão e vários discos no mesmo volume.", rec: "CoW", snap: "y", perm: "y", big: "y" },
 ];
 
-const CAPS: { key: "rec" | "snap" | "perm" | "big"; label: string; short: string; icon: Icon }[] = [
-  { key: "rec", label: "Recuperação após falha", short: "Recuperação", icon: ArrowsClockwise },
-  { key: "snap", label: "Snapshots", short: "Snapshots", icon: Camera },
-  { key: "perm", label: "Permissões de acesso", short: "Permissões", icon: Key },
-  { key: "big", label: "Arquivos maiores que 4 GB", short: "> 4 GB", icon: Ruler },
+const CAPS: { key: "rec" | "snap" | "perm" | "big"; label: string; short: string }[] = [
+  { key: "rec", label: "Recuperação após falha", short: "Recuperação" },
+  { key: "snap", label: "Snapshots", short: "Snapshots" },
+  { key: "perm", label: "Permissões de acesso", short: "Permissões" },
+  { key: "big", label: "Arquivos maiores que 4 GB", short: "> 4 GB" },
 ];
 
 const has = (v: Cap) => v !== "n";
@@ -52,13 +39,13 @@ function Mark({ v }: { v: Cap }) {
   if (v === "y")
     return (
       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-if-green text-white">
-        <Check size={17} weight="bold" />
+        <CheckIcon size={17} />
       </span>
     );
   if (v === "n")
     return (
       <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-ink/[0.07] text-ink/45">
-        <Minus size={17} weight="bold" />
+        <Minus size={17} />
       </span>
     );
   return <span className="rounded-lg bg-if-green/15 px-2.5 py-1 font-mono text-[14px] font-medium text-if-green-dark">{v}</span>;
@@ -69,7 +56,6 @@ export function Comparison() {
   const [manual, setManual] = useState<number | null>(null);
   const active = manual ?? auto;
   const r = ROWS[active];
-  const EnvIcon = r.envIcon;
   const cols = "grid-cols-[118px_236px_1fr_118px_100px_104px_80px]";
 
   return (
@@ -116,7 +102,6 @@ export function Comparison() {
             </div>
             {ROWS.map((row, i) => {
               const on = i === active;
-              const RowIcon = row.envIcon;
               return (
                 <motion.button
                   key={row.fs}
@@ -138,10 +123,7 @@ export function Comparison() {
                     )}
                   />
                   <span className="text-[24px] font-bold tracking-tight">{row.fs}</span>
-                  <span className="flex items-center gap-2 text-[16px] text-ink/75">
-                    <RowIcon size={20} className="text-if-green-dark" />
-                    {row.env}
-                  </span>
+                  <span className="text-[16px] text-ink/70">{row.env}</span>
                   <span className="pr-3 text-[17px] font-medium leading-snug">{row.main}</span>
                   {CAPS.map((c) => (
                     <span key={c.key} className="flex justify-center">
@@ -165,10 +147,7 @@ export function Comparison() {
                 exit={{ opacity: 0, y: -14 }}
                 transition={{ duration: 0.35, ease: EASE }}
               >
-                <div className="flex items-center gap-2 text-[15px] text-white/75">
-                  <EnvIcon size={20} className="text-if-lime" />
-                  {r.env}
-                </div>
+                <div className="text-[13px] font-semibold uppercase tracking-[0.16em] text-white/65">{r.env}</div>
                 <div className="mt-2 font-display text-[64px] font-bold leading-none tracking-tight">{r.fs}</div>
                 <div className="mt-3 text-[19px] font-medium leading-snug text-if-lime">{r.main}</div>
                 <p className="mt-3 text-[17px] leading-snug text-white/80">{r.note}</p>
@@ -176,7 +155,6 @@ export function Comparison() {
                   {CAPS.map((c, j) => {
                     const v = r[c.key];
                     const ok = has(v);
-                    const CI = c.icon;
                     return (
                       <motion.div
                         key={c.key}
@@ -188,16 +166,15 @@ export function Comparison() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.08 * j, duration: 0.35 }}
                       >
-                        <CI size={20} className={ok ? "text-if-lime" : "text-white/50"} />
                         <span className="flex-1">{c.label}</span>
                         {ok ? (
                           v === "y" ? (
-                            <Check size={18} weight="bold" className="text-if-lime" />
+                            <Anim icon={CheckIcon} size={18} trigger={r.fs} delay={0.1 + j * 0.08} className="text-if-lime" />
                           ) : (
                             <span className="font-mono text-[14px] text-if-lime">{v}</span>
                           )
                         ) : (
-                          <Minus size={18} weight="bold" />
+                          <Minus size={18} />
                         )}
                       </motion.div>
                     );

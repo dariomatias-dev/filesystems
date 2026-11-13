@@ -120,15 +120,15 @@ export function DiskGrid() {
       </Panel>
 
       <Panel title="stat — metadados (inode)" delay={0.45}>
-        <div className="relative h-[112px] px-5 py-3.5 font-mono text-[15px]">
-          <AnimatePresence mode="wait">
+        <div className="relative h-[112px] font-mono text-[15px]">
+          <AnimatePresence initial={false}>
             <motion.div
               key={file.name}
-              className="grid grid-cols-3 gap-x-8 gap-y-2.5"
-              initial={{ opacity: 0, y: 16 }}
+              className="absolute inset-0 grid grid-cols-3 gap-x-8 gap-y-2.5 px-5 py-3.5"
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.45, ease: EASE }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.4, ease: EASE }}
             >
               <Meta k="nome" v={file.name} color={file.color} />
               <Meta k="tamanho" v={file.size} />

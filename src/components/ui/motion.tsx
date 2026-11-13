@@ -81,20 +81,24 @@ export function Tag({
   children,
   className,
   tone = "dark",
+  dot = true,
 }: {
   children: ReactNode;
   className?: string;
   tone?: "dark" | "light";
+  /** false = etiqueta de metadado (sem o marcador de seção) */
+  dot?: boolean;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2.5 rounded-full border py-1.5 pl-3 pr-4 text-[15px] font-semibold tracking-wide",
+        "inline-flex items-center gap-2.5 rounded-full border py-1.5 text-[15px] font-semibold tracking-wide",
+        dot ? "pl-3 pr-4" : "px-3.5",
         tone === "dark" ? "border-white/15 bg-white/[0.06] text-white/90" : "border-ink/15 bg-white text-ink/80",
         className,
       )}
     >
-      <span className="h-2 w-2 rounded-[2px] bg-if-green shadow-[0_0_10px_rgba(47,158,65,.9)]" />
+      {dot && <span className="h-2 w-2 rounded-[2px] bg-if-green shadow-[0_0_10px_rgba(47,158,65,.9)]" />}
       {children}
     </span>
   );
@@ -118,7 +122,10 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
   const mv = useMotionValue(0);
-  const text = useTransform(mv, (v) => v.toFixed(decimals).replace(".", ",") + suffix);
+  const text = useTransform(
+    mv,
+    (v) => v.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix,
+  );
   useEffect(() => {
     if (!inView) return;
     const c = animate(mv, to, { duration, delay: BASE_DELAY + delay, ease: EASE });

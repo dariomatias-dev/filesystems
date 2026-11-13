@@ -1,20 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
-import {
-  AppleLogo,
-  Camera,
-  DeviceMobile,
-  DeviceTablet,
-  HardDrive,
-  HardDrives,
-  Lightning,
-  LinuxLogo,
-  Television,
-  Usb,
-  WindowsLogo,
-} from "@/components/ui/icons";
-import { BASE_DELAY, META, cn } from "@/lib/meta";
+import { Anim, ZapOffIcon } from "@/components/ui/icons";
+import { BASE_DELAY, EASE, META, cn } from "@/lib/meta";
 import { BottomShade, Glow, PixelField, VoxelCube } from "@/components/ui/backgrounds";
 import { CountUp, Parallax, Reveal, SplitWords, Tag, Typewriter } from "@/components/ui/motion";
 import { LiveDot, Ticker } from "@/components/ui/live";
@@ -194,7 +182,7 @@ function Journaling() {
             <b className="text-if-lime">recuperar a consistência</b>.
           </Reveal>
           <Reveal delay={0.7} className="mt-auto flex items-center gap-4 rounded-2xl border border-if-red/40 bg-if-red/10 p-5">
-            <Lightning className="shrink-0 text-if-red-soft" size={30} />
+            <Anim icon={ZapOffIcon} size={30} every={4500} delay={1.2} className="text-if-red-soft" />
             <p className="text-[17px] leading-snug text-white/85">
               Sem journal, um desligamento inesperado pode exigir uma varredura completa do disco (fsck / chkdsk).
             </p>
@@ -226,10 +214,7 @@ const FS: FsInfo[] = [
       "Criptografia (EFS) e compressão",
       "Controle de cotas de armazenamento",
     ],
-    where: [
-      { label: "PCs com Windows", icon: WindowsLogo },
-      { label: "Servidores Windows", icon: HardDrives },
-    ],
+    where: ["PCs com Windows", "Servidores Windows"],
     visual: <NtfsVisual />,
   },
   {
@@ -247,11 +232,7 @@ const FS: FsInfo[] = [
       "Extents para organizar a alocação",
       "Estável e com bom desempenho",
     ],
-    where: [
-      { label: "Ubuntu", icon: LinuxLogo },
-      { label: "Debian", icon: LinuxLogo },
-      { label: "Servidores Linux", icon: HardDrives },
-    ],
+    where: ["Ubuntu", "Debian", "Servidores Linux"],
     visual: <Ext4Visual />,
     glow: "c",
   },
@@ -269,11 +250,7 @@ const FS: FsInfo[] = [
       "Frequente em dispositivos removíveis",
       "Limite de 4 GB por arquivo individual",
     ],
-    where: [
-      { label: "Pendrives", icon: Usb },
-      { label: "Cartões de memória", icon: Camera },
-      { label: "Consoles e TVs", icon: Television },
-    ],
+    where: ["Pendrives", "Cartões de memória", "Consoles e TVs"],
     visual: (
       <div className="flex flex-col gap-5">
         <CopyDemo fs="fat32" />
@@ -296,11 +273,7 @@ const FS: FsInfo[] = [
       "Compatível com Windows, macOS e Linux",
       "Estrutura simplificada em relação aos avançados",
     ],
-    where: [
-      { label: "Cartões SD", icon: Camera },
-      { label: "Pendrives", icon: Usb },
-      { label: "HDs/SSDs externos", icon: HardDrive },
-    ],
+    where: ["Cartões SD", "Pendrives", "HDs/SSDs externos"],
     visual: <CopyDemo fs="exfat" />,
     glow: "b",
   },
@@ -319,11 +292,7 @@ const FS: FsInfo[] = [
       "Snapshots: capturas do estado dos dados",
       "Copy-on-Write: não sobrescreve o original",
     ],
-    where: [
-      { label: "Mac", icon: AppleLogo },
-      { label: "iPhone", icon: DeviceMobile },
-      { label: "iPad", icon: DeviceTablet },
-    ],
+    where: ["Mac", "iPhone", "iPad"],
     visual: <ApfsVisual />,
     glow: "c",
   },
@@ -342,11 +311,7 @@ const FS: FsInfo[] = [
       "Compressão de dados",
       "Múltiplos dispositivos de armazenamento",
     ],
-    where: [
-      { label: "Fedora", icon: LinuxLogo },
-      { label: "openSUSE", icon: LinuxLogo },
-      { label: "NAS e servidores", icon: HardDrives },
-    ],
+    where: ["Fedora", "openSUSE", "NAS e servidores"],
     visual: <BtrfsVisual />,
     glow: "a",
   },
@@ -396,10 +361,37 @@ function Conclusion() {
             </motion.span>
           ))}
         </div>
+
+        <div className="mt-auto">
+          <Reveal delay={1.6} className="mb-3 text-[14px] font-semibold uppercase tracking-[0.16em] text-white/75">
+            Regra prática
+          </Reveal>
+          <div className="grid grid-cols-4 gap-4">
+            {RULES.map((r, i) => (
+              <motion.div
+                key={r.when}
+                className="rounded-2xl border border-white/10 bg-black/45 p-5 backdrop-blur-md"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: BASE_DELAY + 1.7 + i * 0.08, duration: 0.7, ease: EASE }}
+              >
+                <div className="text-[17px] leading-snug text-white/80">{r.when}</div>
+                <div className="mt-2 font-display text-[34px] font-bold leading-none tracking-tight text-if-lime">{r.fs}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+const RULES = [
+  { when: "Disco do sistema no Windows", fs: "NTFS" },
+  { when: "Disco do sistema no Linux", fs: "ext4 · Btrfs" },
+  { when: "Mac, iPhone e iPad", fs: "APFS" },
+  { when: "Mídia entre sistemas", fs: "exFAT" },
+];
 
 /* ═══════════════════════════ 17 · OBRIGADO ═══════════════════════════ */
 

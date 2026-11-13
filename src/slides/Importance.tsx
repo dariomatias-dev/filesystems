@@ -5,40 +5,25 @@ import { useEffect, useState } from "react";
 import { BASE_DELAY, EASE, cn } from "@/lib/meta";
 import { Glow } from "@/components/ui/backgrounds";
 import { Reveal, SplitWords, Tag } from "@/components/ui/motion";
-import {
-  CheckCircle,
-  Desktop,
-  Gauge,
-  HardDrives,
-  IconTile,
-  PuzzlePiece,
-  Ruler,
-  ShieldWarning,
-  Usb,
-  Warning,
-  XCircle,
-  type Icon,
-} from "@/components/ui/icons";
+import { Anim, BadgeAlertIcon, CircleCheckIcon, X, type AnimatedIcon } from "@/components/ui/icons";
 
 type Risk = "Compatibilidade" | "Limite de tamanho" | "Desempenho" | "Recuperação";
 type Verdict = "ok" | "warn" | "bad";
 
-const RISKS: { t: Risk; d: string; icon: Icon }[] = [
-  { t: "Compatibilidade", d: "o dispositivo não é reconhecido em outro sistema", icon: PuzzlePiece },
-  { t: "Limite de tamanho", d: "arquivos grandes simplesmente não cabem", icon: Ruler },
-  { t: "Desempenho", d: "estrutura inadequada para a mídia ou o uso", icon: Gauge },
-  { t: "Recuperação", d: "sem mecanismos de consistência após falhas", icon: ShieldWarning },
+const RISKS: { t: Risk; d: string }[] = [
+  { t: "Compatibilidade", d: "o dispositivo não é reconhecido em outro sistema" },
+  { t: "Limite de tamanho", d: "arquivos grandes simplesmente não cabem" },
+  { t: "Desempenho", d: "estrutura inadequada para a mídia ou o uso" },
+  { t: "Recuperação", d: "sem mecanismos de consistência após falhas" },
 ];
 
 const SCENARIOS: {
   name: string;
-  icon: Icon;
   desc: string;
   options: { fs: string; v: Verdict; why: string; risk?: Risk }[];
 }[] = [
   {
     name: "Pendrive compartilhado",
-    icon: Usb,
     desc: "Levar um vídeo de 6 GB entre Windows, macOS e Linux.",
     options: [
       { fs: "exFAT", v: "ok", why: "Arquivos grandes e suporte nos três sistemas" },
@@ -49,7 +34,6 @@ const SCENARIOS: {
   },
   {
     name: "Notebook com Windows",
-    icon: Desktop,
     desc: "Disco do sistema, com vários usuários e risco de queda de energia.",
     options: [
       { fs: "NTFS", v: "ok", why: "Padrão do Windows: permissões, journaling e cotas" },
@@ -60,7 +44,6 @@ const SCENARIOS: {
   },
   {
     name: "Servidor Linux",
-    icon: HardDrives,
     desc: "Muitos arquivos, desempenho estável e recuperação após falhas.",
     options: [
       { fs: "ext4", v: "ok", why: "Escolha consolidada: estável e com journaling" },
@@ -72,9 +55,9 @@ const SCENARIOS: {
 ];
 
 const VERDICT = {
-  ok: { label: "Adequado", icon: CheckCircle, cls: "bg-if-green/20 text-if-lime ring-if-green/50", row: "border-if-green/50 bg-if-green/[0.12]" },
-  warn: { label: "Limitado", icon: Warning, cls: "bg-amber-400/15 text-amber-300 ring-amber-400/40", row: "border-white/10 bg-white/[0.04]" },
-  bad: { label: "Inadequado", icon: XCircle, cls: "bg-if-red/20 text-if-red-soft ring-if-red/50", row: "border-white/10 bg-white/[0.04]" },
+  ok: { label: "Adequado", icon: CircleCheckIcon as AnimatedIcon | null, cls: "bg-if-green/20 text-if-lime ring-if-green/50", row: "border-if-green/50 bg-if-green/[0.12]" },
+  warn: { label: "Limitado", icon: BadgeAlertIcon as AnimatedIcon | null, cls: "bg-amber-400/15 text-amber-300 ring-amber-400/40", row: "border-white/10 bg-white/[0.04]" },
+  bad: { label: "Inadequado", icon: null, cls: "bg-if-red/20 text-if-red-soft ring-if-red/50", row: "border-white/10 bg-white/[0.04]" },
 };
 
 export function Importance() {
@@ -87,7 +70,6 @@ export function Importance() {
   }, [manual]);
   const s = SCENARIOS[sc];
   const triggered = new Set(s.options.map((o) => o.risk).filter(Boolean));
-  const SI = s.icon;
 
   return (
     <div className="grain relative h-full w-full overflow-hidden bg-ink text-white">
@@ -118,7 +100,12 @@ export function Importance() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: BASE_DELAY + 0.5 + i * 0.08, duration: 0.7, ease: EASE }}
                 >
-                  <IconTile icon={r.icon} tone={on ? "red" : "neutral"} size="sm" />
+                  <span
+                    className={cn(
+                      "h-10 w-1.5 shrink-0 rounded-full transition-colors duration-500",
+                      on ? "bg-if-red" : "bg-white/15",
+                    )}
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="text-[19px] font-semibold leading-tight">{r.t}</div>
                     <div className="text-[15px] text-white/75">{r.d}</div>
@@ -188,8 +175,7 @@ export function Importance() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="flex items-center gap-4 rounded-2xl bg-black/35 p-4">
-                <IconTile icon={SI} tone="green" size="lg" />
+              <div className="rounded-2xl bg-black/35 px-5 py-4">
                 <div>
                   <div className="text-[24px] font-semibold leading-tight">{s.name}</div>
                   <div className="mt-0.5 text-[17px] text-white/80">{s.desc}</div>
@@ -216,7 +202,7 @@ export function Importance() {
                           V.cls,
                         )}
                       >
-                        <VI size={18} weight="fill" />
+                        {VI ? <Anim icon={VI} size={18} delay={0.4 + i * 0.12} /> : <X size={17} strokeWidth={2.5} />}
                         {V.label}
                       </span>
                     </motion.div>

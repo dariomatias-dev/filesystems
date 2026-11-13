@@ -1,106 +1,85 @@
 "use client";
 
 /**
- * Ícones da apresentação: todos da biblioteca Phosphor (https://phosphoricons.com),
- * peso "duotone" por padrão (definido no IconContext do Deck). A camada de
- * preenchimento do duotone usa a cor atual com 20% de opacidade, então o ícone
- * herda o verde/vermelho do contêiner automaticamente.
+ * Ícones da apresentação.
+ *
+ * - Estáticos: lucide-react (https://lucide.dev), traço de 2px.
+ * - Animados: lucide-animated (https://lucide-animated.com), mesmo desenho do
+ *   Lucide, animados com `motion`. Os arquivos ficam em components/icons/animated.
+ *
+ * Regra de uso: ícone só onde carrega significado (navegação, estado, ação).
+ * Nada de ícone decorativo ao lado de todo título ou rótulo.
  */
-import type { ReactNode } from "react";
-import { IconContext, type Icon as PhosphorIcon } from "@phosphor-icons/react";
+import {
+  useEffect,
+  useRef,
+  type ForwardRefExoticComponent,
+  type HTMLAttributes,
+  type RefAttributes,
+} from "react";
+import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/meta";
 
-export {
-  AppleLogo,
-  ArrowCounterClockwise,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  ArrowsClockwise,
-  BookOpenText,
-  Camera,
-  ChartPieSlice,
-  Check,
-  ChalkboardTeacher,
-  CheckCircle,
-  ClipboardText,
-  CircleNotch,
-  CornersOut,
-  Cpu,
-  Database,
-  Desktop,
-  DeviceMobile,
-  DeviceTablet,
-  Eye,
-  FileText,
-  FileVideo,
-  Folder,
-  FolderSimple,
-  Gauge,
-  GraduationCap,
-  HardDrive,
-  HardDrives,
-  Key,
-  Lifebuoy,
-  Lightning,
-  LinuxLogo,
-  ListChecks,
-  LockSimple,
-  LockSimpleOpen,
-  Memory,
-  Minus,
-  PencilSimple,
-  PuzzlePiece,
-  QrCode,
-  Ruler,
-  ShieldCheck,
-  ShieldWarning,
-  SealCheck,
-  Stack,
-  Tag,
-  Television,
-  Trash,
-  TreeStructure,
-  Usb,
-  Users,
-  UsersThree,
-  Warning,
-  WindowsLogo,
-  X,
-  XCircle,
-} from "@phosphor-icons/react";
+export { Camera, FileText, Folder, Minus, Pencil, Trash2, X, Eye, Film } from "lucide-react";
 
-export type Icon = PhosphorIcon;
+export { ArrowLeftIcon } from "@/components/icons/animated/arrow-left";
+export { ArrowRightIcon } from "@/components/icons/animated/arrow-right";
+export { BadgeAlertIcon } from "@/components/icons/animated/badge-alert";
+export { CheckIcon } from "@/components/icons/animated/check";
+export { CircleCheckIcon } from "@/components/icons/animated/circle-check";
+export { LockKeyholeIcon } from "@/components/icons/animated/lock-keyhole";
+export { LockKeyholeOpenIcon } from "@/components/icons/animated/lock-keyhole-open";
+export { Maximize2Icon } from "@/components/icons/animated/maximize-2";
+export { RotateCCWIcon } from "@/components/icons/animated/rotate-ccw";
+export { ShieldCheckIcon } from "@/components/icons/animated/shield-check";
+export { ZapOffIcon } from "@/components/icons/animated/zap-off";
 
-export function IconProvider({ children }: { children: ReactNode }) {
-  return <IconContext.Provider value={{ weight: "duotone", size: 22, color: "currentColor" }}>{children}</IconContext.Provider>;
-}
+type Handle = { startAnimation: () => void; stopAnimation: () => void };
+export type AnimatedIcon = ForwardRefExoticComponent<
+  HTMLAttributes<HTMLDivElement> & { size?: number } & RefAttributes<Handle>
+>;
 
-/** Contêiner padrão de ícone: mesmo raio, tamanhos e tons em toda a apresentação. */
-export function IconTile({
+/**
+ * Dispara a animação do ícone:
+ * - ao montar (após `delay` s);
+ * - sempre que `trigger` mudar;
+ * - em loop a cada `every` ms, se informado;
+ * - e ao passar o mouse.
+ */
+export function Anim({
   icon: I,
-  tone = "green",
-  size = "md",
+  size = 22,
+  delay = 0,
+  every,
+  trigger,
   className,
 }: {
-  icon: PhosphorIcon;
-  tone?: "green" | "red" | "neutral" | "solid" | "light";
-  size?: "sm" | "md" | "lg";
+  icon: AnimatedIcon;
+  size?: number;
+  delay?: number;
+  every?: number;
+  trigger?: unknown;
   className?: string;
 }) {
-  const box = { sm: "h-9 w-9 rounded-lg", md: "h-12 w-12 rounded-xl", lg: "h-16 w-16 rounded-2xl" }[size];
-  const px = { sm: 18, md: 24, lg: 32 }[size];
-  const t = {
-    green: "bg-if-green/15 text-if-lime ring-1 ring-inset ring-if-green/30",
-    red: "bg-if-red/15 text-if-red-soft ring-1 ring-inset ring-if-red/35",
-    neutral: "bg-white/8 text-white/85 ring-1 ring-inset ring-white/12",
-    solid: "bg-white/20 text-white ring-1 ring-inset ring-white/25",
-    light: "bg-if-green/12 text-if-green-dark ring-1 ring-inset ring-if-green/25",
-  }[tone];
+  const ref = useRef<Handle>(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) return;
+    const t = setTimeout(() => ref.current?.startAnimation(), delay * 1000);
+    const id = every ? setInterval(() => ref.current?.startAnimation(), every) : undefined;
+    return () => {
+      clearTimeout(t);
+      if (id) clearInterval(id);
+    };
+  }, [reduce, delay, every, trigger]);
+
   return (
-    <span className={cn("inline-flex shrink-0 items-center justify-center", box, t, className)}>
-      <I size={px} />
-    </span>
+    <I
+      ref={ref}
+      size={size}
+      className={cn("inline-flex shrink-0 items-center justify-center", className)}
+      onMouseEnter={() => ref.current?.startAnimation()}
+    />
   );
 }
